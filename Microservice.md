@@ -81,7 +81,7 @@ In order to achieve this the architectural concepts of **loose coupling** and **
 - **Loose coupling**: microservices should be able to be modified without requiring changes in other microservices.
 - **Problem locality**: related problems should be grouped together (in other words, if a change requires an update in another part of the system, those parts should be close to each other).
 
- 
+
 
 - - - If two or more services are too tightly coupled – i.e. have too many correlated changes which require careful coordination – it should be considered to unify them into one service.
     - If we’re not in the ideal setting of loose coupling and concern separation and re-architecting the system is currently impossible (for lack of resources or business reasons) then strict [semantic versioning](http://semver.org/spec/v2.0.0.html) should be applied to all interdependent services. This is to make sure we are building and deploying against correct versions of service counterparts.
@@ -132,3 +132,88 @@ It is very desirable to base the CI/CD flow for each service on the same templat
 
 [Netflix microservice pattern](http://techblog.netflix.com/2013/01/optimizing-netflix-api.html)
 
+
+
+## Tools
+
+| Tools                                | Function                                 | Cons                         | Pros                                     |      |
+| ------------------------------------ | ---------------------------------------- | ---------------------------- | ---------------------------------------- | ---- |
+| ECS                                  | Orchestration                            | lose request during updating | Support AWS ECS natively                 |      |
+| ECR                                  | Registry                                 |                              |                                          |      |
+| [Consul](https://www.consul.io/)     | Service Discovery  <br> Failure Detection <br> Multi Datacenter <br> KV Storage |                              |                                          |      |
+| [Kubernetes](https://kubernetes.io/) | Orchestration <br> Service Discovery     | Service Discovery            | Run Anywhere <br> Planet Scale <br> Never Outgrow <br> Uncouple with cloud |      |
+| OpenShift Origin                     |                                          |                              |                                          |      |
+
+
+
+ECS does not provide a service discovery service, thus it needs to work with consul especially in China region. While, kubernetes seem to be able to collaborate well with AWS products, need more investigation on this topic. 
+
+
+
+Kuberetes
+
+**The Master is responsible for managing the cluster.** 
+
+- scheduling applications
+- maintaining applications' desired state
+- scaling applications
+- rolling out new updates.
+
+Master provides **Kubernetes API** ,. 
+
+
+
+A node is a VM or a physical computer that serves as a worker machine in a Kubernetes cluster.**
+
+Kubelet: client, install Docker, A Kubernetes cluster that handles production traffic should have a minimum of **three** nodes.
+
+
+
+**Minikube** is a lightweight Kubernetes implementation that creates a VM on your local machine and deploys a simple cluster containing only one node. 
+
+
+
+**kubectl**: Commend line interface. 
+
+- **kubectl get** - list resources
+
+- **kubectl describe** - show detailed information about a resource
+
+- **kubectl logs** - print the logs from a container in a pod
+
+- **kubectl exec** - execute a command on a container in a pod
+
+  ​
+
+Kubernetes dashboard allows you to view your applications in a UI.
+
+**Pod** is a Kubernetes abstraction that represents a group of one or more application containers (such as Docker or rkt), and some shared resources for those containers. Those resources include:
+
+- Shared storage, as Volumes
+- Networking, as a unique cluster IP address
+- Information about how to run each container, such as the container image version or specific ports to use
+
+The containers in a Pod share an IP Address and port space, are always co-located and co-scheduled, and run in a shared context on the same Node.
+
+
+
+![pods](https://kubernetes.io/docs/tutorials/kubernetes-basics/public/images/module_03_pods.svg)
+
+
+
+A Pod always runs on a Node. A **Node** is a worker machine in Kubernetes and may be either a virtual or a physical machine, depending on the cluster.
+
+ Node can have multiple pods, and the Kubernetes master automatically handles scheduling the pods across the Nodes in the cluster. The Master's automatic scheduling takes into account the available resources on each Node.
+
+Every Kubernetes Node runs at least:
+
+- Kubelet, a process responsible for communication between the Kubernetes Master and the Nodes; it manages the Pods and the containers running on a machine.
+- A container runtime (like Docker, rkt) responsible for pulling the container image from a registry, unpacking the container, and running the application.
+
+*Containers should only be scheduled together in a single Pod if they are tightly coupled and need to share resources such as disk.*
+
+![Node overview](https://kubernetes.io/docs/tutorials/kubernetes-basics/public/images/module_03_nodes.svg)
+
+
+
+A **Service** in Kubernetes is an abstraction which defines a logical set of Pods and a policy by which to access them. Services enable a loose coupling between dependent Pods. 
