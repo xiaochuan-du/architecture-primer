@@ -150,6 +150,16 @@ ECS does not provide a service discovery service, thus it needs to work with con
 
 
 
+For dev only,
+
+docker-compose up each containers
+
+
+
+
+
+
+
 Kuberetes
 
 **The Master is responsible for managing the cluster.** 
@@ -217,3 +227,12 @@ Every Kubernetes Node runs at least:
 
 
 A **Service** in Kubernetes is an abstraction which defines a logical set of Pods and a policy by which to access them. Services enable a loose coupling between dependent Pods. 
+
+
+
+[best practice](https://techbeacon.com/one-year-using-kubernetes-production-lessons-learned) 
+
+[Write containers' log into cloudwatch](https://docs.docker.com/engine/admin/logging/awslogs/#credentials)
+
+http://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_awslogs.html 
+
