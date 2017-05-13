@@ -1,5 +1,226 @@
 # Microservice
 
+演化式架构师：
+
+工作职能：创造系统对开发者足够友好
+
+职能：
+
+- 系统间交互
+- 控制 Tech Stack
+  - too little: fixed to one solution, different to improved by new tech
+  - too much: out of control, developers hard to move from one project to the other
+- 定义技术愿景：
+  - 服从公司战略目标，制定技术路线
+  - 制定原则：
+    - 原则保证技术stack与公司目标一致，包括约束（原则自己定义、约束外界控制）
+    - eg：目标：缩短新功能上线时间。原则：交付团队需要控制软件整个生命周期。
+    - eg：目标：在其他国家团长业务。原则：在响应国家快速部署
+    - [Heroku 12 Factors](https://blog.gruntwork.io/why-we-use-terraform-and-not-chef-puppet-ansible-saltstack-or-cloudformation-7989dad2865c)
+  - 实践：
+    - 实践保证原则得到落实，实践通常与技术相关
+    - 常见实践包括：
+      - 代码规范
+      - 日志规范
+      - HTTP／REST标准
+    - eg：对于缩短上线时间的目标，实践是需要单独AWS account实现。使得资源自助管理和与其他团队隔离。
+  - 原则与实践相结合，对于小团队可以是一套，对于大团队实践需要映射到原则。eg，原则对应 .Net实践和java实践。
+- 治理：通过评估人员需求、当前情况、下一步的可能，来确保企业目标的达成。并且对于一致性的方向和目标进行监督。
+- 方案取舍
+- 花时间和团队一起工作，
+- 制定方案不能让研发人员感觉到痛苦。
+- 所有工作的方式
+  - 架构师领导的小组讨论：
+    - 出现异议：
+      - 风险小，可以按照团队方案实施，在错误中学习
+      - 风险高需要提前预防
+      - ge，小孩子学骑自行车／过马路
+
+方法：
+
+- 定期跟团队一起工作，发现工作问题。
+- Target -> Principle -> Practice 对应关系维护方式
+  - 文档 
+  - 实例代码
+  - 工具 （推荐）
+
+
+
+架构师职能小结：
+
+- 愿景：设定、维护
+
+- 同理心：考虑决定对于客户和同事的影响
+
+- 合作：沟通产生结论
+
+- 适应性：根据客户和组织的需求调整技术愿景
+
+- 治理：确保技术愿景按照要求实现。
+
+  ​
+
+## 定义一个好的服务：
+
+- 考虑到自治性
+- 统筹全局
+
+
+- 松耦合
+- 高内聚
+
+
+
+### Bounded Context 
+
+每个Domain需要多个Bounded Content，一部分不需要外接通信，而另一部分需要与外界通信。
+
+如果服务边界和上下文边界一致，并且为服务架构能够很好的表示这些边界，可以认为实现了高内聚低耦合的第一步。
+
+在服务拆分之前，需要明确边界，如果边界不明确，可以先一起上线，等到边界明确后进行重构。切分服务不应该依靠技术话费，而应该考虑应用场景。
+
+
+
+#### 监控
+
+工具
+
+- 检测 Nagios
+- Graphite 收集指标数据
+- 日志收集 （HealthCheck，CloudWatch，）
+
+#### 接口
+
+HTTP/REST
+
+version，API
+
+#### 架构安全性
+
+一组服务down了如能能不影响全局？
+
+正确处理一下三种请求返回：
+
+1. 正常、处理正确
+2. 错误请求，服务器识别了错误（业务错误）
+3. 服务器down了，没办法做出判断
+
+
+
+## Integration
+
+### Protocol
+
+-  SOAP
+- REST
+- XML-RPC
+- REST
+- Protocol Buffers
+
+### Consideration
+
+- 修改不应该影响消费者
+- API 的技术无关性
+- 易于消费者使用，但是不耦合特定消费者
+- 隐藏内部细节
+
+### Methods
+
+##### 共享数据库
+
+Cons：
+
+- 暴露细节，一改全改
+- 数据库技术升级
+- 维护职责不明确。
+
+##### Sync & Async
+
+Async
+
+- Request/ response: 设置回调
+- 事件
+
+Sync
+
+- Request/ response
+
+##### Orchestration（编排） & choreography（协同） 
+
+Orchestration:
+
+- 单一中心太多指责
+
+Choregraphy：
+
+- 一个实践多个订阅者
+- 重量级的协同容易导致不稳定，修改代价比较大。需要跨服务监控。
+
+Request/ response：
+
+- RPC (SOAP, Thrift, protocol buffers)
+  - 易于使用
+  - 与特定语言绑定
+  - 本地调用和远程调用不一致（网速、装载时间）
+  - 代码修改需要考虑调用方
+- REST
+  - [steps toward the glory of REST](https://www.martinfowler.com/articles/richardsonMaturityModel.html)
+  - 在客户端可以服务发现API而不是hardcode，回报需要长期才能体现出来
+  - XML 可以利用XPATH查找元素，JSON轻量
+  - 开发模式：先设计接口，等接口稳定之后再实现内部的持久化。在此期间，在硬盘上做持久化的工作。缺点是推迟了数据库部分的集成，对于新服务这样的设计是可以接受的。
+  - 缺点：
+    - 客户端解析参数代码和服务端无法公用。
+    - 有些Web框架对于动词支持不全，PUT，PATCH
+    - 不适合低延迟场景因为数据不够紧凑
+    - ​
+
+## 代码治理
+
+把技术共识推行到工作中
+
+### 范例
+
+可以运行的代码范例
+
+
+
+### 裁剪服务代码模版
+
+工具
+
+- Dropwizard
+- Karyon
+
+机遇开发语言的模版建立
+
+考虑模版升级对每个工程的影响
+
+
+
+## 技术债务
+
+由于实践紧张、任务重技术债务需要补偿。
+
+架构师需要有一个list列出需要偿还的债务。
+
+
+
+## 集中治理和领导
+
+
+
+## Exception Management
+
+ 需要违背原则的场景，eg 一般用Mysql 但是数据增长过快使用cassandra
+
+
+
+## 团队建设
+
+Grow teammates to take responsibility and face new challenges, so that they have changes to meet their career target. 
+
+
+
 ## What is Monolithic service pattern?
 
 [Monolithic Introduction](http://microservices.io/patterns/monolithic.html)
