@@ -6,16 +6,29 @@
   - [Step 1: Review the scalability video lecture](https://github.com/donnemartin/system-design-primer#step-1-review-the-scalability-video-lecture)
   - [Step 2: Review the scalability article](https://github.com/donnemartin/system-design-primer#step-2-review-the-scalability-article)
   - [Next steps](https://github.com/donnemartin/system-design-primer#next-steps)
+
 - [Performance vs scalability](https://github.com/donnemartin/system-design-primer#performance-vs-scalability)
+
+  ![](http://microservices.io/i/DecomposingApplications.021.jpg)
+
+  X axis : scale out
+
+  Y axis: decouple applicaiton into service, SOA, microservice
+
+  Z axis: compared with X-axis, each server runs a subnet of data. (e.g., scale database, region specific services )
+
 - [Latency vs throughput](https://github.com/donnemartin/system-design-primer#latency-vs-throughput)
+
 - Availability vs consistency
   - CAP theorem
     - [CP - consistency and partition tolerance](https://github.com/donnemartin/system-design-primer#cp---consistency-and-partition-tolerance)
     - [AP - availability and partition tolerance](https://github.com/donnemartin/system-design-primer#ap---availability-and-partition-tolerance)
+
 - Consistency patterns
   - [Weak consistency](https://github.com/donnemartin/system-design-primer#weak-consistency)
   - [Eventual consistency](https://github.com/donnemartin/system-design-primer#eventual-consistency)
   - [Strong consistency](https://github.com/donnemartin/system-design-primer#strong-consistency)
+
 - Availability patterns
   - [Fail-over](https://github.com/donnemartin/system-design-primer#fail-over)
   - [Replication](https://github.com/donnemartin/system-design-primer#replication)
