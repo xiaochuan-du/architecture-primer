@@ -112,10 +112,10 @@ version，API
 ### Protocol
 
 -  SOAP
-- REST
-- XML-RPC
-- REST
-- Protocol Buffers
+-  REST
+-  XML-RPC
+-  REST
+-  Protocol Buffers
 
 ### Consideration
 
@@ -156,7 +156,7 @@ Choregraphy：
 - 一个实践多个订阅者
 - 重量级的协同容易导致不稳定，修改代价比较大。需要跨服务监控。
 
-Request/ response：
+**Request/ response：**
 
 - RPC (SOAP, Thrift, protocol buffers)
   - 易于使用
@@ -164,6 +164,7 @@ Request/ response：
   - 本地调用和远程调用不一致（网速、装载时间）
   - 代码修改需要考虑调用方
 - REST
+  - 推荐读物（Book：REST 实战）
   - [steps toward the glory of REST](https://www.martinfowler.com/articles/richardsonMaturityModel.html)
   - 在客户端可以服务发现API而不是hardcode，回报需要长期才能体现出来
   - XML 可以利用XPATH查找元素，JSON轻量
@@ -172,7 +173,97 @@ Request/ response：
     - 客户端解析参数代码和服务端无法公用。
     - 有些Web框架对于动词支持不全，PUT，PATCH
     - 不适合低延迟场景因为数据不够紧凑
-    - ​
+
+**Event driven**
+
+- 推荐读物：企业集成模式
+- 消息代理（Rabbit MQ）尽量让消息处理中间件保持简单，逻辑在自己的服务中。
+- HTTP传播事件
+
+需要考虑
+
+- 为服务发布实践机制
+- 消费者接受机制
+
+需要依靠死信队列，防止catastrophic failover。
+
+短生命周期的操作易于管理，长生命周期的容易出现问题。
+
+
+
+**服务即状态机**
+
+如果出现了在客户服务之外与其进行相关修改的情况，那就失去的内聚性。
+
+把关键领域的生命周期显式的建模出来非常有用
+
+- 一个地方处理冲突
+- 在状态变化基础上封装一些行为
+
+
+
+Reactive extensions（Rx，响应式扩展）：组合起来多个调用的结果
+
+
+
+DRY 和代码重构用
+
+夸服务前提下可以拷贝代码，为了避免库耦合。服务间引入大量的耦合会产生比拷贝代码更多的问题。
+
+需要考虑是否需要客户端代码
+
+功能
+
+- 服务发现
+- 故障处理
+- 日志打印
+
+
+
+ 按引用访问
+
+- 客户端告诉服务端资源位置，服务端在需要时再做查询处理，降低从动作出发到结果产生的延时
+- 服务端给客户端数据中带有有效时常，客户端在时长内做缓存处理。
+- 客户端在处理来自服务端的数据时应考虑到时效性，谨慎处理
+
+
+
+代码版本管理
+
+系统设计Postel法制：
+
+对自己的东西要求严格，对接受来的东西要宽容。这样的设计会在服务方发生变化时尽量少的修改代码。
+
+版本号码
+
+major.minor.patch
+
+major向后不兼容的修改
+
+minor新功能
+
+patch修复bug
+
+使用扩展收缩模式解决接口兼容性的问题，直到老版本的接口无人使用再停止响应版本的代码。
+
+API version contro methods：
+
+- HTTP Header
+- /v1/api
+- /api?version=1
+
+
+
+如果两个版本API的过程过于漫长，需要考虑写新接口：
+
+- 需要部署两次（新、旧对于hardcode ／v1/来说）
+- 过程需要数据库同步，路由，中间件的保证
+
+
+
+最好新老交替时间不长。
+
+
 
 ## 代码治理
 
