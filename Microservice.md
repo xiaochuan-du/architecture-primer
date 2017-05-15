@@ -1,5 +1,14 @@
 # Microservice
 
+Reading list:
+
+- [Microservice website](http://microservices.io/patterns/microservices.html)
+- 推荐读物（Book：REST 实战）
+
+Reference list:
+
+- Microservice 
+
 演化式架构师：
 
 工作职能：创造系统对开发者足够友好
@@ -164,7 +173,6 @@ Choregraphy：
   - 本地调用和远程调用不一致（网速、装载时间）
   - 代码修改需要考虑调用方
 - REST
-  - 推荐读物（Book：REST 实战）
   - [steps toward the glory of REST](https://www.martinfowler.com/articles/richardsonMaturityModel.html)
   - 在客户端可以服务发现API而不是hardcode，回报需要长期才能体现出来
   - XML 可以利用XPATH查找元素，JSON轻量
