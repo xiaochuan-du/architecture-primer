@@ -266,10 +266,56 @@ API version contro methods：
 
 - 需要部署两次（新、旧对于hardcode ／v1/来说）
 - 过程需要数据库同步，路由，中间件的保证
-
+- API不同但是持久层保持一致
 
 
 最好新老交替时间不长。
+
+
+
+**User Interface**
+
+组合API需要考虑服务与前端的组合，比如不同分辨率提供不同数据，组合API方法
+
+- 前端调用多个API（API Gateway）
+- UI片段组合（返回widget）
+
+
+- Backends For Frontends(BFF) 每一个应用都有专著的后端，后端访问通用服务。
+
+选择需要考虑高内聚，低耦合，抽象共同部分。
+
+
+
+一个服务是购买还是自己组建？
+
+如果通用服务就购买，如果是核心资产就自己研发。
+
+
+
+集成第三方服务
+
+- 定制化
+- 意大利面集成
+- 包装暴露新街口
+- Strangler Appliatoin Pattern：route request from previous service to new services step by step
+
+
+
+### Decompose monolithic system
+
+接缝：抽取独立的代码不会影响系统其它部分，服务边界。
+
+在一个地区人员对一种service完全负责。
+
+减少外建使用可以减少服务化拆分时的设计负担。
+
+重构数据库，分离不同服务的存储结构。
+
+分布式事务，两阶段提交。
+
+- 投票阶段：参与者告诉事务管理器是否需要继续。
+- 一个否定票就回退。否则成功。（隐藏风险，因为最终投票也可能失败）
 
 
 
