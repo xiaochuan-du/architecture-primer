@@ -312,12 +312,137 @@ API version contro methods：
 
 重构数据库，分离不同服务的存储结构。
 
-分布式事务，两阶段提交。
+## 分布式事务
+
+两阶段提交。
 
 - 投票阶段：参与者告诉事务管理器是否需要继续。
 - 一个否定票就回退。否则成功。（隐藏风险，因为最终投票也可能失败）
 
 
+一致性事务尽量不要放到不同的微服务里面，如果一定需要要显式的创建一个概念来表示这一事务，目的是为了补偿方便。Eg，处理中的订单。
+
+## 报告
+
+- 通过服务调用来获取数据，通过操作批量数据的API，降低调用次数
+- 数据导出：将数据从各个库分别导出，需要了解各个数据库的表结构。使用试图可以减少对表结构先验知识的依赖。S3作为核心存储。筛选后进入Tableau或者Excel。
+- Transaction event 导出：修改数据的事件暴露给好多消费者，此方法耦合低，时效性高。数据量大的时候扩展难度较大。
+- Netflix 基于Cassandra的备份机制，备份在s3中，使用Hadoop进行数据处理，Aegisthus。
+- 实时性对报告的产生有影响。
+
+
+
+## CI
+
+CI 三个问题：
+
+- 每天code check in 到build分支
+- CI具有测试功能
+- 构建失败是需要修改的第一要务
+
+每一个微服务，有一个源代码库和CI build。持续集成服务器可以只有一个。
+
+Pipeline
+
+编译-》快速测试-》耗时测试-》用户验收测试（User Acceptance Testing）-》性能测试-》生产环境
+
+定制化镜像的几种方法
+
+- 默认镜像
+- Puppet／Chef 应用版本控制的配置镜像
+- 从实例烧制镜像（Packer工具提供本地和云的一致性烧录过程）
+
+**配置漂移**：使用环境和配置好的不一致。
+
+### 环境
+
+tradeoff 类生成环境 and 快速反馈。约接近生产环境overhead越多，越接近开发环境反馈速度越快。
+
+如果为了不同环境构建了不同的构建物
+
+- 必须在构建物在使用前进行测试，common-dev测试结果在common-test是不能重用的。
+- 构建比较耗时
+- 构建的时候需要知道存在哪些环境
+- 需要把敏感的配置数据放到代码里面。
+
+**比较好的方法是一套构建物，配合不同的环境变量和配置文**件。
+
+Host-service
+
+- 一个主机一个服务
+- 单主机多服务
+- 单主机多服务容器
+- 平台即为服务（Elastic Beanstalk）
+
+自动化配置
+
+Vagrant是个部署平台，在测试盒开发环境使用，
+
+
+
+FollowUp
+
+**一个Pipeline和多个环境如何结合？**
+
+IAC和部署过程相结合。
+
+自动化。
+
+
+
+## 测试
+
+**测试类型 Testing Diagram**
+
+
+
+![](http://www.gallop.net/blog/wp-content/uploads/2016/03/blog-image.png)
+
+Q1: xUnit
+
+Q2: Fit-Finesse/ BDD/ Cucumber
+
+Q3: Manually
+
+Q4: load_http, etc
+
+
+
+**测试范围 Testing pyramid** 
+
+![](https://www.symbio.com/wp-content/uploads/2014/08/agile_pyramid2.jpg)
+
+
+
+- 在单元测试阶段需要mock独立功能，所有运算需要在内存中完成。
+- 集成测试中需要打桩服务，如虚拟数据，数据库内容建立，完成测试后打桩服务自动清理。
+
+尽量使用小范围测试取代端到端测试
+
+单元测试，开发团队自己负责。
+
+集成测试夸团队共享代码权利，共同维护质量。
+
+所有版本要进行单独的release。
+
+（GUI Tests）端到端测试只覆盖少量的核心场景，不是覆盖全部的用户故事，全部细节需要在Unittest中体现。
+
+**Consumer-Driven Contract**（消费者驱动的契约）：CDC根据消费的需求形成契约，变成CI的一部分，如果满足不了消费者的预期，那么服务无法上线。
+
+Pact是CDC的工具，核心思想是消费者定义使用样例子，生产者满足消费者需求。
+
+1. 消费者用Ruby DSL定义对生产者的期望。
+2. 本地启动Mock服务器，生产Pact规范文件。JSON。
+3. 生产者这边利用JSON Pact规范来驱动对于API的调用。
+
+区分部署和上线：
+
+- Blue／Green deployment，附属之后只有通过了冒烟测试，才release。
+- Canary releasing 金丝雀发布：同时保持一定比例的新旧版本。新版本高于基线分数才作为正式release。
+
+Mean Time Between Failures, MTBF：？？？
+
+Mean Time To Repair, MTTR: 回滚，蓝绿部署
 
 ## 代码治理
 
