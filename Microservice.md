@@ -1,13 +1,104 @@
 # Microservice
 
-Reading list:
+## Reading list:
 
 - [Microservice website](http://microservices.io/patterns/microservices.html)
 - 推荐读物（Book：REST 实战）
 
-Reference list:
+## Reference list:
 
 - Microservice 
+- [best-practices-for-building-a-microservice-architecture](http://www.vinaysahni.com/best-practices-for-building-a-microservice-architecture)
+
+
+
+A microservice architecture shifts around complexity. Instead of a single complex system, you have a bunch of simple services with complex interactions.
+
+Target:
+
+- **Maximize team autonomy**: Create an environment where teams can get more done without having to coordinate with other teams.
+- **Optimize for development speed**: Hardware is cheap, people are not. Empower teams to build powerful services easily and quickly.
+- **Focus on automation**: People make mistakes. More systems to operate also means more things that can go wrong. Automate everything.
+- **Provide flexibility without compromising consistency**: Give teams the freedom to do what's right for their services, but have a set of standardized building blocks to keep things sane in the long run.
+- **Built for resilience**: Systems can fail for a number of reasons. A distributed system introduces a whole set of new failure scenarios. Ensure measures are in place to minimize impact.
+- **Simplified maintenance**: Instead of one codebase, you'll have many. Have guidelines and tools in place to ensure consistency.
+
+
+
+#### Platform
+
+Dashboard:
+
+- continuous integration
+- monitoring
+- logging 
+- documentation: 
+  - should be updated when services are updated.
+  - The notification system should have knowledge of who the *current* owners are, accounting for any team or ownership changes.
+- ​
+
+Slack a custom bot:
+
+-  triggering tests and deploys
+-  requesting quick stats about a running service
+- chat logs also become an audit trail of past actions.
+
+Independently Developed & Deployed
+
+- be careful about shared libraries
+
+Private Data Ownership: 
+
+- Sharing data storage is a sneaky source of coupling. 
+- Select the right database technology based on the use cases of the service.
+
+Shared data server?
+
+- a single point of failure 
+- One service impacts another
+
+Identifying Service Boundaries
+
+- loosely coupled
+- high cohesion
+- each service responsible for it's own bounded context
+-  [Domain driven design](https://en.wikipedia.org/wiki/Domain-driven_design) ,
+- Address sync operation to deal with sync scenarios,  eg, subscribe an event stream by two processors.
+
+How big is microservice:
+
+- A service should be *small enough* that it serves a focused purpose. 
+- *big enough* that it minimizes interservice communication.
+- Include but not limited to:
+  - backend service
+  - db
+  - cache
+  - job queues
+
+Eventual Consistency
+
+- some services have a divergent view of the underlying customer requests
+- need to confirm if the lag is acceptable
+- shields one service from failures in other services.
+
+**idempotency**/ Idempotent operations
+
+- easy to scale worker processes.
+- Reduces error scenarios
+- retrying jobs 
+
+Load balancers:
+
+- server side
+- client side, choose which servers to go
+
+
+
+Security:
+
+**Layer your security**
+
+-  Also known as [defence in depth](https://en.wikipedia.org/wiki/Defense_in_depth_(computing)).
 
 演化式架构师：
 
