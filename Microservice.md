@@ -444,6 +444,34 @@ Mean Time Between Failures, MTBF：？？？
 
 Mean Time To Repair, MTTR: 回滚，蓝绿部署
 
+## 安全
+
+API安全
+
+- 内部没有权限控制：缺点，一经攻破所有的防线都down了
+- HTTPS 
+- 使用SAML或者 OpenID Connect，需要在客户端储存credentials
+- 客户端证书，复杂，难以调试
+- HMAC：基于哈希的消息玛，优缺点
+  - 共享hardcode
+  - 模式而不是标准：SHA-256， JWT令牌
+  - 第三方无法篡改，但是请求中的数据对网络嗅探来说是可见的
+- API密匙：结合服务发现，API目录、限速等功能
+- 混淆代理人：让一个服务访问自己的下游服务，非常复杂。
+
+静态内容安全
+
+- 密钥
+- 加密
+- 按需揭秘
+- 加密备份
+
+
+
+IDS：Instrusion Detection Systems
+
+IPS：Instrusion Prevention Systems
+
 ## 代码治理
 
 把技术共识推行到工作中
